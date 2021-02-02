@@ -1,3 +1,14 @@
+<?php
+$sekarang=date("dmY");
+header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+header("Content-Type: application/force-download");
+header("Content-Type: application/octet-stream");
+header("Content-Type: application/download");
+header("Expires: Sat, 26 Jul 2010 05:00:00 GMT"); 
+header("content-disposition: attachment;filename=rekap_nilai".$sekarang.".xls");
+header("Content-Transfer-Encoding: binary ");
+?>
+
 <style>
 .grid-container {
   display: grid;
@@ -17,7 +28,7 @@
   </div>
   <div class="p-2"><?= $this->session->flashdata('message'); ?></div>
   <div id="print_area">
- 
+
   <?php
     $style = "";
     $nama_kelas = array();
@@ -599,24 +610,7 @@
       </tbody>
     </table>
   <?php endif; ?>
-
   </div>
-  Detail : <?= $detail_tampil ?><br>
-  Mapel : <?= $mapel_id ?><br>
-  Jabatan :<?= $this->session->userdata('kr_jabatan_id')?>
-  <?php if(($this->session->userdata('kr_jabatan_id')==4)and($detail_tampil=='1')){ ?>
-  <a href="<?= base_url('Laporan_CRUD/excel_rekap_show/'.$t_id.'/'.$sem.'/'.$mapel_id); ?>"target="new"class="btn btn-primary">
-  Excell</a>
-  <?php } ?>
-  <?php if($this->session->userdata('kr_jabatan_id')==7){ ?>
-    <a href="<?= base_url('Laporan_CRUD/excel_rekap_show/'.$t_id.'/'.$sem); ?>"target="new"class="btn btn-primary">  Excell</a>
-  <?php } ?><br>
-  <input type="button" name="print_rekap" id="print_rekap" class="btn btn-success" value="Print">
-
 </div>
 
-<script>
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();
-});
-</script>
+

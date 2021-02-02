@@ -16,7 +16,7 @@
 
             <form class="user" action="<?= base_url('Laporan_CRUD/index_rekap_show') ?>" method="POST">
               <div class="form-group row mt-4">
-                <div class="col-sm mb-sm-0">
+                <div class="col-sm mb-sm-0"> 
                   <label><b><u>Tahun Ajaran:</u></b></label>
                   <select name="t_id" class="form-control form-control-sm" id="t_id_ketuntasan">
                     <?php foreach ($t_all as $m) : ?>
@@ -26,6 +26,7 @@
                     <?php endforeach ?>
                   </select>
                 </div>
+
                 <div class="col-sm mb-sm-0">
                   <label><b><u>Semester:</u></b></label>
                   <select name="sem" class="form-control form-control-sm">
@@ -33,9 +34,31 @@
                     <option value="2">2</option>
                   </select>
                 </div>
+              </div>  
 
-              </div>
-              
+
+<?php if($this->session->userdata('kr_jabatan_id')=='4'){?>
+<div class="form-group row mt-4">       
+<div class="col-sm mb-sm-0">
+<label><b><u>Mata Pelajaran:</u></b></label>         
+<select name="mapel_id" class="form-control form-control-sm" id="mapel_id">
+<?php foreach ($mapel_all as $m) : ?>
+<option value='<?= $m['mapel_id'] ?>'>
+<?= $m['mapel_nama']; ?>
+</option>
+<?php endforeach ?>
+</select>
+</div>  
+<div class="col-sm mb-sm-0">
+<label><b><u>Detail Tampil:</u></b></label>
+<select name="detail_tampil" class="form-control form-control-sm">
+<option value="0">Tidak</option>
+<option value="1">Ya</option>
+</select>
+</div>      
+</div>
+<?php } ?>
+
               <button type="submit" class="btn btn-primary btn-user btn-block">
                 Proses
               </button>

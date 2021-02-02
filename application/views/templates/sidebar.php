@@ -93,6 +93,7 @@
                   <h6 class="collapse-header">Nilai</h6>
                   <a class="collapse-item" href=' . base_url('Tes_CRUD') . '>1. Harian</a>
                   <a class="collapse-item" href=' . base_url('Uj_CRUD') . '>2. PTS & PAS</a>
+                  <a class="collapse-item" href=' . base_url('Laporan_crud/index_rekap') . '>3. Rekap Nilai</a>
                 </div>
               </div>
             </li>

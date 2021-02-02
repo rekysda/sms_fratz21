@@ -22,11 +22,9 @@ function get_client_ip() {
 
 $ip = explode(".",get_client_ip());
 
-if($ip[0]=="192" || $ip[0]=="::1"){
-  $config['base_url'] = 'http://rapor.frateran.sch.id/sms';
-}else{
-  $config['base_url'] = 'http://rapor.frateran.sch.id/sms';
-}
+$config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
+$config['base_url'] .= "://" . $_SERVER['HTTP_HOST'];
+$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
 
 
 
