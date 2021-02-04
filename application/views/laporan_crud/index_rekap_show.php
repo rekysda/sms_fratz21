@@ -601,9 +601,11 @@
   <?php endif; ?>
 
   </div>
+  <!--
   Detail : <?= $detail_tampil ?><br>
   Mapel : <?= $mapel_id ?><br>
   Jabatan :<?= $this->session->userdata('kr_jabatan_id')?>
+  -->
   <?php if(($this->session->userdata('kr_jabatan_id')==4)and($detail_tampil=='1')){ ?>
   <a href="<?= base_url('Laporan_CRUD/excel_rekap_show/'.$t_id.'/'.$sem.'/'.$mapel_id); ?>"target="new"class="btn btn-primary">
   Excell</a>
