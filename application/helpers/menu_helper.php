@@ -590,7 +590,7 @@ function returnRaportPengetahuan($d_s_id, $semester, $mapel_id){
 
   return $raport_semester2;
 }
-
+ 
 
 function hitungNA($NH,$ujmid,$ujfin){
   $pembagi = 2;
@@ -1144,3 +1144,23 @@ function returnKelasXiisiswa($sis_id){
 
   return $a;
 }
+
+/// reky
+
+function return_sis_no_induk_from_d_s_id($d_s_id){
+
+$ci = get_instance();
+$ci->db->select('sis_no_induk as value');
+$ci->db->from('sis');
+$ci->db->join('d_s', 'sis.sis_id = d_s.d_s_sis_id','left');
+$ci->db->where('d_s.d_s_id', $d_s_id);
+return $ci->db->get()->row()->value;
+}
+
+function return_jsonsister($sis_no_induk){
+  $data2 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswadetail?nis=$sis_no_induk");
+  $json = json_decode($data2, TRUE);
+  return $json;
+
+}
+

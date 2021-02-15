@@ -111,7 +111,6 @@ class Laporan_CRUD extends CI_Controller
     $kr_id = $data['kr']['kr_id'];
 
     $data['t_all'] = $this->_t->return_all();
-
     $this->load->view('templates/header',$data);
     $this->load->view('templates/sidebar',$data);
     $this->load->view('templates/topbar',$data);
@@ -133,7 +132,10 @@ class Laporan_CRUD extends CI_Controller
       //data karyawan yang sedang login untuk topbar
       $data['kr'] = $this->_kr->find_by_username($this->session->userdata('kr_username'));
       $data['sis_arr'] = $this->input->post('siswa_check[]',TRUE);
-
+      $data['data2']='';
+      $data['json']='';
+      $data['siswa_id']='';
+      $data['jsonsister']='';
       // $data['kepsek'] = $this->_sk->find_by_id($this->session->userdata('kr_sk_id'));
       $data['walkel'] = $this->_kelas->find_walkel_by_kelas_id($this->input->post('kelas_id',TRUE));
       $data['kelas_id'] = $this->input->post('kelas_id',TRUE);
@@ -464,6 +466,7 @@ class Laporan_CRUD extends CI_Controller
                       LEFT JOIN kelas ON d_mpl_kelas_id = kelas_id
                       WHERE kelas_t_id = $t_id AND d_mpl_kr_id = $kr_id
                       ORDER BY kelas_nama")->result_array();
+    $data['kr_id'] =$kr_id;                     
     }
 
  
@@ -488,7 +491,7 @@ class Laporan_CRUD extends CI_Controller
 
     //jika dia wakakur semua kelas
     if($this->session->userdata('kr_jabatan_id')==4){
-
+ 
       $data['detail_tampil'] = 1 ;
 
       $data['m_nama'] = $this->db->query

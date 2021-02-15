@@ -204,10 +204,11 @@ header("Content-Transfer-Encoding: binary ");
               
               <?php
                 $pembagiNHKet = 0;
+                $sum_jumlahitem=0;
                 foreach ($topik_all as $t) :
                 //cari tes
                 $tes = return_tes_by_d_s_id_topik($s['d_s_id'], $t['topik_id']);
-
+                $jumlahitem='0';
                 if($tes):
               ?>
                 <!-- KETERAMPILAN -->
@@ -248,6 +249,7 @@ header("Content-Transfer-Encoding: binary ");
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_prak'.$i] ?></td>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_prak'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif;  ?>
                       <?php endfor; ?>
 
@@ -259,6 +261,7 @@ header("Content-Transfer-Encoding: binary ");
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_produk'.$i] ?></td>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_produk'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif; ?>
                       <?php endfor; ?>
 
@@ -270,6 +273,7 @@ header("Content-Transfer-Encoding: binary ");
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_proyek'.$i] ?></td>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_proyek'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif; ?>
                       <?php endfor; ?>
 
@@ -281,6 +285,7 @@ header("Content-Transfer-Encoding: binary ");
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_porto'.$i] ?></td>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_porto'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif; ?>
                       <?php endfor; ?>
 
@@ -290,9 +295,12 @@ header("Content-Transfer-Encoding: binary ");
                         <td style="width: 100%; height:20px;">-</td>
                       <?php endif; ?>
                     </tr>
-                  </table>
+                  </table><br>
+                <?php if($jumlahitem >'1'){ 
+                  $jumlahitem ='1';
+                 }?>
                 </td>                
-                
+                <?php if($jumlahitem==1){$sum_jumlahitem++;}?>
               <?php else: ?>
                 <!-- Kalau nilai harian di KD nya belum diisi -->
                 <td>
@@ -349,7 +357,8 @@ header("Content-Transfer-Encoding: binary ");
                     if($pembagiNHKet ==0){
                       $pembagiNHKet = 1;
                     }
-                    $NH_ket_hasil = $NH_ket['NA_ket']/$pembagiNHKet;
+                  //  $NH_ket_hasil = $NH_ket['NA_ket']/$pembagiNHKet;
+                  $NH_ket_hasil = $NH_ket['NA_ket']/$sum_jumlahitem;
                     if(round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])) < $kkm){
                       $tidak_tuntas_ket++;
                     }
