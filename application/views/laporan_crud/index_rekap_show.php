@@ -192,6 +192,7 @@
 
               
               <?php
+                $jumlahnilaimax = 0;
                 $pembagiNHKet = 0;
                 $sum_jumlahitem=0;
                 foreach ($topik_all as $t) :
@@ -202,7 +203,6 @@
               ?>
                 <!-- KETERAMPILAN -->
                 <td>
-                
                   <table style="width: 100%;">
                     <tr>
                       <?php
@@ -283,17 +283,17 @@
                       <?php if($hit_0 >=4):?>
                         <td style="width: 100%; height:20px;">-</td>
                       <?php endif; ?>
-
                     </tr>
-
-                  </table><br>
-                <?php if($jumlahitem >'1'){ 
+                  </table>
+<?php if($jumlahitem >'1'){ 
                   $jumlahitem ='1';
                  }?>
-                 
+<?php // echo "tes_d_s_id = '".$s['d_s_id']."' and tes_topik_id = '".$t['topik_id']."'<br>"; ?>
+<?php // echo 'Nilai Max : '.return_tes_by_d_s_id_topik_max($s['d_s_id'], $t['topik_id']); ?>
+<?php  $nilaimax = return_tes_by_d_s_id_topik_max($s['d_s_id'], $t['topik_id']); ?>
+<?php  $jumlahnilaimax +=$nilaimax; ?>
                 </td>                
-                <?php if($jumlahitem==1){$sum_jumlahitem++;}?>
-
+<?php if($jumlahitem==1){$sum_jumlahitem++;}?>
               <?php else: ?>
                 <!-- Kalau nilai harian di KD nya belum diisi -->
                 <td>
@@ -349,26 +349,35 @@
                     if($pembagiNHKet ==0){
                       $pembagiNHKet = 1;
                     }
-
-                  //  $NH_ket_hasil = $NH_ket['NA_ket']/$pembagiNHKet;
-                    $NH_ket_hasil = $NH_ket['NA_ket']/$sum_jumlahitem;
-                    if(round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])) < $kkm){
+                  $nabaru = 0;
+                  //$nalama = 0;
+                  //$NH_ket_hasil = $NH_ket['NA_ket']/$sum_jumlahitem;
+                  //$nalama = round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi']));
+                  $NH_ket_hasil_baru = $jumlahnilaimax/$sum_jumlahitem;
+                  $nabaru = ($NH_ket_hasil_baru!=0)?round(hitungNA($NH_ket_hasil_baru,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])):'-';
+              //  $NH_ket_hasil = $NH_ket['NA_ket']/$pembagiNHKet;
+              //  if(round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])) < $kkm){
+                  if($nabaru < $kkm){
                       $tidak_tuntas_ket++;
                     }
-                //    echo "#$sum_jumlahitem# ";
-                //    echo "[$pembagiNHKet] ";
-                    echo round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi']));
+              //  echo "#$sum_jumlahitem# ";
+              //  echo "[$pembagiNHKet] ";    
+              /*  echo 'NALAMA = '.round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi']));
+                echo '<br>Jumlah Nilai Max = '.$jumlahnilaimax; */
+              //  echo $nalama.">>";
+                  echo $nabaru;
                   }else{
-                    $tidak_tuntas_ket++;
-                    echo "-";
+                  $tidak_tuntas_ket++;
+                  echo "-";
                   }
                 ?>
               </td>
 
               <td><?= return_singkat_sikap($nilai_sikap1['total_sosial']) ?></td>
               <td><?= return_singkat_sikap($nilai_sikap1['total_spirit']) ?></td>
-
-            <?php
+              
+              <!-- SEMESTER 2 -->
+            <?php           
               elseif($sem == 2):
             ?>
               <!-- PTS PENGETAHUAN-->
@@ -423,10 +432,13 @@
               
 
               <?php
+                $jumlahnilaimax = 0;
+                $pembagiNHKet = 0;
+                $sum_jumlahitem=0;
+                $jumlahitem=0;
                 foreach ($topik_all as $t) :
                 //cari tes
                 $tes = return_tes_by_d_s_id_topik($s['d_s_id'], $t['topik_id']);
-
                 if($tes):
               ?>
                 <!-- KETERAMPILAN -->
@@ -435,13 +447,13 @@
                     <tr>
                       <?php
                         $pembagi = $tes['tes_jum_prak'] + $tes['tes_jum_prod'] + $tes['tes_jum_proy'] + $tes['tes_jum_porto'];
-                        $pembagiNHKet = 0;
+                  /*      $pembagiNHKet = 0;
                         foreach ($ket as $n) :
                           if($n['NA_ket']!=-1 or $n['NA_ket']>0){
                             $pembagiNHKet++; //untuk membagi nilai keterampilan
                           }
                         endforeach;
-
+*/
                         if($pembagi!=0)
                           $lebar2 = 100/($tes['tes_jum_prak'] + $tes['tes_jum_prod'] + $tes['tes_jum_proy'] + $tes['tes_jum_porto']);
                         else
@@ -466,6 +478,7 @@
                           <?php $hit_0++; ?>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_prak'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif;  ?>
                       <?php endfor; ?>
 
@@ -474,6 +487,7 @@
                           <?php $hit_0++; ?>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_produk'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif; ?>
                       <?php endfor; ?>
 
@@ -482,6 +496,7 @@
                           <?php $hit_0++; ?>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_proyek'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif; ?>
                       <?php endfor; ?>
 
@@ -490,6 +505,7 @@
                           <?php $hit_0++; ?>
                         <?php else: ?>
                           <td style="width: <?= $lebar2 ?>%; height:20px;"><?= $tes['tes_porto'.$i] ?></td>
+                          <?php $jumlahitem++; ?>
                         <?php endif; ?>
                       <?php endfor; ?>
 
@@ -498,8 +514,13 @@
                       <?php endif; ?>
                     </tr>
                   </table>
+<?php if($jumlahitem >'1'){ 
+$jumlahitem ='1';
+}?>
+<?php  $nilaimax = return_tes_by_d_s_id_topik_max($s['d_s_id'], $t['topik_id']); ?>
+<?php  $jumlahnilaimax +=$nilaimax; ?>  
                 </td>
-                
+<?php if($jumlahitem==1){$sum_jumlahitem++;}?>                
               <?php else: ?>
                 <!-- Kalau nilai harian di KD nya belum diisi -->
                 <td>
@@ -547,15 +568,24 @@
               <!-- NR KETERAMPILAN-->
               <td>
                 <?php
+                $pembagiNHKet = 0;
                   if($NH_ket){
                     if($pembagiNHKet ==0){
                       $pembagiNHKet = 1;
                     }
-                    $NH_ket_hasil = $NH_ket['NA_ket']/$pembagiNHKet;
-                    if(round(hitungNA($NH_ket_hasil,$uj['uj_mid2_psi'],$uj['uj_fin2_psi'])) < $kkm){
+                    $nabaru = 0;
+                    //$nalama = 0;
+                    //$NH_ket_hasil = $NH_ket['NA_ket']/$sum_jumlahitem;
+                    //$nalama = round(hitungNA($NH_ket_hasil,$uj['uj_mid1_psi'],$uj['uj_fin1_psi']));
+                    $NH_ket_hasil_baru = $jumlahnilaimax/$sum_jumlahitem;
+                    $nabaru = ($NH_ket_hasil_baru!=0)?round(hitungNA($NH_ket_hasil_baru,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])):'-';
+                //  $NH_ket_hasil = $NH_ket['NA_ket']/$pembagiNHKet;
+                   // if(round(hitungNA($NH_ket_hasil,$uj['uj_mid2_psi'],$uj['uj_fin2_psi'])) < $kkm){
+                    if($nabaru < $kkm){
                       $tidak_tuntas_ket++;
                     }
-                    echo round(hitungNA($NH_ket_hasil,$uj['uj_mid2_psi'],$uj['uj_fin2_psi']));
+                  //  echo round(hitungNA($NH_ket_hasil,$uj['uj_mid2_psi'],$uj['uj_fin2_psi']));
+                    echo $nabaru;
                   }else{
                     $tidak_tuntas_ket++;
                     echo "-";

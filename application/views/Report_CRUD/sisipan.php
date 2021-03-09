@@ -23,8 +23,16 @@
 
                 $detail_siswa = return_detail_siswa($sis_arr[$i]);
 
-                $json = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswapresensi?nis=".$detail_siswa['sis_no_induk']);
-                $obj = json_decode($json);
+// Sister Presensi
+                $jsontahunakademiksister = return_jsontahunakademiksister($detail_siswa['t_nama'],$semester);
+                $tahunakademik_id = $jsontahunakademiksister[0]['tahunakademik_id'];
+                $nis = $detail_siswa['sis_no_induk'];
+                $data2 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswapresensitahunakademik?nis=".$nis."&tahunakademik=".$tahunakademik_id."");
+                $json = json_decode($data2, TRUE);
+                $sakit =  $json['sakit'];
+                $ijin =  $json['ijin'];
+                $alpa =  $json['alpa'];
+// Sister Presensi
 
                 //var_dump($siswa[0]['sis_nama_depan']);
 
@@ -215,17 +223,17 @@
                     <tr style="height:2px;" >
                       <td style='width: 25px;'>1</td>
                       <td style='width: 150px; padding: 0px 0px 0px 5px; text-align:left;'>Sakit</td>
-                      <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $obj->sakit->jumlah; ?></td>
+                      <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $sakit; ?></td>
                     </tr>
                     <tr style="height:2px;" >
                       <td style='width: 25px;'>2</td>
                       <td style='width: 150px; padding: 0px 0px 0px 5px; text-align:left;'>Izin</td>
-                      <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $obj->ijin->jumlah; ?></td>
+                      <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $ijin; ?></td>
                     </tr>
                     <tr style="height:2px;" >
                       <td style='width: 25px;'>3</td>
                       <td style='width: 150px; padding: 0px 0px 0px 5px; text-align:left;'>Tanpa Keterangan</td>
-                      <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $obj->alpa->jumlah; ?></td>
+                      <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $alpa; ?></td>
                     </tr>
                   </tbody>
                 </table>

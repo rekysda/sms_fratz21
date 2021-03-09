@@ -1,6 +1,4 @@
 <div class="container d-flex justify-content-center">
-
-
   <div class="card o-hidden border-0 shadow-lg my-5 text">
     <div class="card-body p-0">
       <!-- Nested Row within Card Body -->
@@ -26,6 +24,26 @@
                 if(isset($sikap)):
 
             ?>
+
+<?php
+// Sister Presensi
+$jsontahunakademiksister = return_jsontahunakademiksister($detail_siswa['t_nama'],$semester);
+$tahunakademik_id = $jsontahunakademiksister[0]['tahunakademik_id'];
+$nis = $detail_siswa['sis_no_induk'];
+$data2 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswapresensitahunakademik?nis=".$nis."&tahunakademik=".$tahunakademik_id."");
+$json = json_decode($data2, TRUE);
+$sakit =  $json['sakit'];
+$ijin =  $json['ijin'];
+$alpa =  $json['alpa'];
+/*
+echo "<br>tahun: ".$detail_siswa['t_nama']."<br>";
+echo "semester: ".$semester."<br>";
+echo "tahunakademik_id: ".$tahunakademik_id."<br>";
+echo "nis: ".$detail_siswa['sis_no_induk']."<br>";
+echo "sakit: ".$sakit."<br>";
+*/
+// Sister Presensi
+?>
               <table class="rapot_atas">
                 <tbody>
                   <tr>
@@ -394,8 +412,11 @@
                         echo $tahun_fix;
                       ?>
                       <td class='nomor'><?= $nomor_ket ?></td>
-                      <td style='padding: 0px 0px 0px 5px; margin: 0px;'><?= $z['mapel_nama'] ?></td>
+                      <td style='padding: 0px 0px 0px 5px; margin: 0px;'>
+                      <?= $z['mapel_id'] ?>
+                      <?= $z['mapel_nama'] ?></td>
                       <td class='nomor'>
+                      
                         <?php
                             $pembagi_z = 0;
                             $ket = returnbanyakKet($z['topik_kumpulan'],$detail_siswa['d_s_id']);
@@ -409,12 +430,43 @@
                             }
                             $NH_ket_hasil = $z['NA_ket']/$pembagi_z;
                             $final_keterampilan = round(hitungNA($NH_ket_hasil,$ujmidps,$ujfinps));
-                            echo $final_keterampilan;
+                           // echo "#NaLama: ".$final_keterampilan."<br>";
                         ?>
+                      
+                      <!-- keterampilan semester 1 -->
+                <?php
+                $siswa_id= $sis_arr[$i];
+                $jumlahnilaimax=0;
+                $nilaimax =0;
+                $jumlahitem=0;
+                $topik_mapel = topikberdasarkanmapel($semester, $z['m_id']);
+                $uj = return_uj_by_d_s_id($siswa_id, $z['m_id']);
+                foreach ($topik_mapel as $t){
+                $nilaimax = return_tes_by_d_s_id_topik_max($siswa_id, $t['topik_id']);
+                $tes = return_tes_by_d_s_id_topik($siswa_id, $t['topik_id']);
+                if($tes and ($nilaimax>0)){
+                $jumlahnilaimax +=$nilaimax;
+//                echo $siswa_id."->";
+//                echo $t['topik_id']."->NMAX";
+//                echo $nilaimax;
+//                echo "[".$jumlahnilaimax."]<br>";
+                $jumlahitem++;
+                }
+                }
+                ?>
+                <?php
+                $NH_ket_hasil_baru = $jumlahnilaimax/$jumlahitem;
+                $nabaru = ($NH_ket_hasil_baru!=0)?round(hitungNA($NH_ket_hasil_baru,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])):'-';
+//                echo "NilaiMax :".$jumlahnilaimax."<br>";
+//                echo "Jumlahitem :".$jumlahitem."<br>";
+//                echo "NH_ket_hasil_baru :".$NH_ket_hasil_baru."<br>";
+                echo $nabaru;
+                ?>
+<!-- keterampilan semester 1 -->   
                       </td>
-                      <td class='nomor'><?= return_abjad_NH($final_keterampilan) ?></td>
+                      <td class='nomor'><?= return_abjad_NH($nabaru) ?></td>
                       <td style='padding: 0px 0px 0px 5px;'>
-                        <?= returnDescKet($z['topik_kumpulan'],$detail_siswa['d_s_id'],$final_keterampilan) ?>
+                        <?= returnDescKet($z['topik_kumpulan'],$detail_siswa['d_s_id'],$nabaru) ?>
                       </td>
                     </tr>
 
@@ -553,15 +605,15 @@
                 <tbody>
                   <tr style="height:2px;" >
                     <td style='width: 150px; padding: 0px 0px 0px 5px;'>Sakit</td>
-                    <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $obj->sakit->jumlah; ?></td>
+                    <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $sakit; ?></td>
                   </tr>
                   <tr style="height:2px;" >
                     <td style='width: 150px; padding: 0px 0px 0px 5px;'>Izin</td>
-                    <td style='padding: 0px 0px 0px 5px; text-align:center;'><?=$obj->ijin->jumlah; ?></td>
+                    <td style='padding: 0px 0px 0px 5px; text-align:center;'><?=$ijin; ?></td>
                   </tr>
                   <tr style="height:2px;" >
                     <td style='width: 150px; padding: 0px 0px 0px 5px;'>Tanpa Keterangan</td>
-                    <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $obj->alpa->jumlah; ?></td>
+                    <td style='padding: 0px 0px 0px 5px; text-align:center;'><?= $alpa; ?></td>
                   </tr>
                 </tbody>
               </table>

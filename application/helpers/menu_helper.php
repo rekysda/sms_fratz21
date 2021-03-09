@@ -1164,3 +1164,38 @@ function return_jsonsister($sis_no_induk){
 
 }
 
+function return_tes_by_d_s_id_topik_max($d_s_id, $topik_id)
+{
+  $ci = &get_instance();
+  $ci->db->select('GREATEST(tes_prak1,tes_prak2,tes_prak3,tes_produk1,tes_produk2,tes_produk3,tes_proyek1,tes_proyek2,tes_proyek3,tes_porto1,tes_porto2,tes_porto3)as value');
+  $ci->db->from('tes');
+  $ci->db->where('tes.tes_d_s_id', $d_s_id);
+  $ci->db->where('tes.tes_topik_id', $topik_id);
+  return $ci->db->get()->row()->value;
+}
+
+////////// Kodingan Baru
+
+function topikberdasarkanmapel($semester, $mapel_id){
+  $ci =& get_instance();
+  $ci->db->select('*');
+  $ci->db->from('topik');
+  $ci->db->where('topik.topik_semester', $semester);
+  $ci->db->where('topik.topik_mapel_id', $mapel_id);
+  return $ci->db->get()->result_array();
+}
+
+function return_jsontahunakademiksister($tahun,$semester){
+  $data2 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/gettahunakademik?tahun=$tahun&semester=$semester");
+  $json = json_decode($data2, TRUE);
+  return $json;
+
+}
+
+function return_jsonsiswapresensitahunakademik($nis,$tahunakademik){
+  $data2 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswapresensitahunakademik?nis=$nis&tahunakademik=$tahunakademik");
+  $json = json_decode($data2, TRUE);
+  return $json;
+
+}
+

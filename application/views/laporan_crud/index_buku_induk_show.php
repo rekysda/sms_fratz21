@@ -73,13 +73,33 @@ $sis_no_induk = return_sis_no_induk_from_d_s_id( $sis_arr[$i]);
 $jsonsister = return_jsonsister($sis_no_induk);
 //echo "siswa : $sis_arr[$i]<br>";   
 //echo "sis_no_induk : $sis_no_induk<br>";   
-
+?>
+<?php
+// Sister Presensi SMT 1
+$jsontahunakademiksister1 = return_jsontahunakademiksister($t['t_nama'],1);
+$tahunakademik_id1 = $jsontahunakademiksister1[0]['tahunakademik_id'];
+$nis = $sis_no_induk;
+$data1 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswapresensitahunakademik?nis=".$nis."&tahunakademik=".$tahunakademik_id1."");
+$json1 = json_decode($data1, TRUE);
+$sakit1 =  $json1['sakit'];
+$ijin1 =  $json1['ijin'];
+$alpa1 =  $json1['alpa'];
+// Sister Presensi SMT 2
+$jsontahunakademiksister2 = return_jsontahunakademiksister($t['t_nama'],2);
+$tahunakademik_id2 = $jsontahunakademiksister2[0]['tahunakademik_id'];
+$nis = $detail_siswa['sis_no_induk'];
+$data2 = file_get_contents("http://sisterv4.frateran.sch.id/sisterv4fratz/api/siswapresensitahunakademik?nis=".$nis."&tahunakademik=".$tahunakademik_id2."");
+$json2 = json_decode($data2, TRUE);
+$sakit2 =  $json2['sakit'];
+$ijin2 =  $json2['ijin'];
+$alpa2 =  $json2['alpa'];
+// Sister Presensi
 ?>
 
         <div class="grid-container-inside">
           <div class="grid-item-inside-center">
             <div><b>LEMBAR BUKU INDUK PESERTA DIDIK SMA</b></div>
-            <div>NOMOR INDUK PESERTA DIDIK: </div>
+            <div>NOMOR INDUK PESERTA DIDIK: <?= $sis_no_induk; ?></div>
           </div>
           <br>
           <div class="grid-item-inside"><b>A. KETERANGAN DIRI PESERTA DIDIK</b></div>
@@ -233,7 +253,6 @@ $jsonsister = return_jsonsister($sis_no_induk);
                   $ujfinps = 0;
                   $naKet = 0;
                 }
-
                 /////////////////////////semester 2//////////////////////////////
                 $nilai2 = returnRaportPengetahuan($sis_arr[$i], 2, $m['mapel_id']);
                 if($nilai2){
@@ -271,10 +290,71 @@ $jsonsister = return_jsonsister($sis_no_induk);
                 <td style="padding: 0px 0px 0px 5px;"><?= $m['mapel_nama'] ?></td>
                 <!-- pengetahuan semester 1 -->
                 <td style="text-align: center;"><?= round(hitungNA($nh,$ujmid,$ujfin)) ?></td>
-                <td style="text-align: center;"><?= $naKet ?></td>
+                <td style="text-align: center;">
+<!-- keterampilan semester 1 -->
+                <?php
+                $siswa_id=$sis_arr[$i];
+                $jumlahnilaimax=0;
+                $nilaimax =0;
+                $jumlahitem=0;
+                $topik_mapel = topikberdasarkanmapel(1, $m['mapel_id']);
+                $uj = return_uj_by_d_s_id($siswa_id, $m['mapel_id']);
+                foreach ($topik_mapel as $t){
+                $nilaimax = return_tes_by_d_s_id_topik_max($siswa_id, $t['topik_id']);
+                $tes = return_tes_by_d_s_id_topik($siswa_id, $t['topik_id']);
+                if($tes and ($nilaimax>0)){
+                $jumlahnilaimax +=$nilaimax;
+//                echo $siswa_id.">>";
+//                echo $t['topik_id'];
+//                echo "[".$jumlahnilaimax."]<br>";
+                $jumlahitem++;
+                }
+                }
+                ?>
+                <?php
+                $NH_ket_hasil_baru = $jumlahnilaimax/$jumlahitem;
+                $nabaru = ($NH_ket_hasil_baru!=0)?round(hitungNA($NH_ket_hasil_baru,$uj['uj_mid1_psi'],$uj['uj_fin1_psi'])):'-';
+//                echo "NilaiMax :".$jumlahnilaimax."<br>";
+//                echo "Jumlahitem :".$jumlahitem."<br>";
+//                echo "NH_ket_hasil_baru :".$NH_ket_hasil_baru."<br>";
+                echo $nabaru;
+                ?>
+<!-- keterampilan semester 1 -->                
+                </td>
                 <!-- pengetahuan semester 2 -->
                 <td style="text-align: center;"><?= round(hitungNA($nh2,$ujmid2,$ujfin2)) ?></td>
-                <td style="text-align: center;"><?= $naKet2 ?></td>
+                <td style="text-align: center;">
+                <!-- keterampilan semester 2 -->
+                <?php
+                $siswa_id=$sis_arr[$i];
+                $jumlahnilaimax=0;
+                $nilaimax =0;
+                $jumlahitem=0;
+                $topik_mapel = topikberdasarkanmapel(2, $m['mapel_id']);
+                $uj = return_uj_by_d_s_id($siswa_id, $m['mapel_id']);
+                foreach ($topik_mapel as $t){
+                $nilaimax = return_tes_by_d_s_id_topik_max($siswa_id, $t['topik_id']);
+                $tes = return_tes_by_d_s_id_topik($siswa_id, $t['topik_id']);
+                if($tes and ($nilaimax>0)){
+                $jumlahnilaimax +=$nilaimax;
+//                echo $siswa_id.">>";
+//                echo $t['topik_id'];
+//                echo "[".$jumlahnilaimax."]<br>";
+                $jumlahitem++;
+                }
+                }
+                ?>
+                <?php
+                $NH_ket_hasil_baru = $jumlahnilaimax/$jumlahitem;
+                $nabaru2 = ($NH_ket_hasil_baru!=0)?round(hitungNA($NH_ket_hasil_baru,$uj['uj_mid2_psi'],$uj['uj_fin2_psi'])):'-';
+//                echo "NilaiMax :".$jumlahnilaimax."<br>";
+//                echo "Jumlahitem :".$jumlahitem."<br>";
+//                echo "NH_ket_hasil_baru :".$NH_ket_hasil_baru."<br>";
+                echo $nabaru2;
+                ?>
+<!-- keterampilan semester 2 -->  
+                
+                </td>
               </tr>
             <?php
               $no++;
@@ -313,18 +393,18 @@ $jsonsister = return_jsonsister($sis_no_induk);
             </tr>
             <tr>
               <td style="padding: 0px 0px 0px 5px;" colspan="2">Sakit</td>
-              <td colspan="2"></td>
-              <td colspan="2"></td>
+              <td colspan="2" align="center"><?= $sakit1; ?></td>
+              <td colspan="2" align="center"><?= $sakit2; ?></td>
             </tr>
             <tr>
               <td style="padding: 0px 0px 0px 5px;" colspan="2">Izin</td>
-              <td colspan="2"></td>
-              <td colspan="2"></td>
+              <td colspan="2" align="center"><?= $ijin1;?></td>
+              <td colspan="2" align="center"><?= $ijin2;?></td>
             </tr>
             <tr>
               <td style="padding: 0px 0px 0px 5px;" colspan="2">Tanpa Keterangan</td>
-              <td colspan="2"></td>
-              <td colspan="2"></td>
+              <td colspan="2" align="center"><?= $alpa1;?></td>
+              <td colspan="2" align="center"><?= $alpa2;?></td>
             </tr>
             <tr>
               <td style="text-align: center;" colspan="2"><b>AKHLAK MULIA DAN KEPRIBADIAN</b></td>

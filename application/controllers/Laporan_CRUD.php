@@ -136,6 +136,7 @@ class Laporan_CRUD extends CI_Controller
       $data['json']='';
       $data['siswa_id']='';
       $data['jsonsister']='';
+      $data['jsontahunakademik']='';
       // $data['kepsek'] = $this->_sk->find_by_id($this->session->userdata('kr_sk_id'));
       $data['walkel'] = $this->_kelas->find_walkel_by_kelas_id($this->input->post('kelas_id',TRUE));
       $data['kelas_id'] = $this->input->post('kelas_id',TRUE);
@@ -458,7 +459,7 @@ class Laporan_CRUD extends CI_Controller
     if($this->session->userdata('kr_jabatan_id')==7){
       $kr_id = $data['kr']['kr_id'];
       $data['detail_tampil'] = 1;
-
+      $data['pembagiNHKet']=0;
       $data['d_all'] = $this->db->query
                       ("SELECT d_mpl_mapel_id, mapel_nama, kelas_id, kelas_nama, kelas_jenj_id, mapel_kkm
                       FROM d_mpl
